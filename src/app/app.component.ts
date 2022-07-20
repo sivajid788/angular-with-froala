@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-// import "froala-editor/js/plugins.pkgd.min.js";
+import "froala-editor/js/plugins.pkgd.min.js";
 
 @Component({
   selector: 'app-root',
@@ -17,8 +17,8 @@ export class AppComponent {
     },
     placeholderText: "Start typing..."
   };
- 
+
   public editorContent: string = 'My Document\'s Title';
   title = 'MyFroalaApp';
-  
+
 }
