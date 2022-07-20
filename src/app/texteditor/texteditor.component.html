@@ -4,7 +4,7 @@
           [(ngModel)]="contentdata.Title" class="form-control" required #PageContentTitle="ngModel"
           id="PageContentTitle">
   </div>
-  <div [froalaEditor]="options" >
+  <div [froalaEditor]="options" [(ngModel)]="contentdata.Content">
   </div>
   <div class="form-group mt-4">
       <div class="row">
@@ -15,4 +15,4 @@
   </div>
 </form>
 
-<!-- [(ngModel)]="contentdata.Content" #PageContent="ngModel" name="PageContent" -->
+<!--  #PageContent="ngModel" name="PageContent" -->
