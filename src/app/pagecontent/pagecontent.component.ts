@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ContentService } from 'app/content.service';
+import { ContentService } from "../content.service";
 
 @Component({
   selector: 'app-pagecontent',
