@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ContentService } from "../content.service";
+import { Content } from "../Content";
+import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import "froala-editor/js/plugins.pkgd.min.js";
 
 @Component({
   selector: 'app-texteditor',
@@ -7,9 +12,53 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TexteditorComponent implements OnInit {
 
-  constructor() { }
+  name = 'ng2-ckeditor';
+  ckeConfig: any;
+  mycontent: string;
+  log: string;
+  @ViewChild('PageContent') PageContent: any;
+  res: any;
+
+  constructor(private contentservice: ContentService,
+              private router: Router,
+              private route: ActivatedRoute) { }
+
+  contentdata = new Content();
 
   ngOnInit(): void {
+    this.Getcontent()
+    this.ckeConfig = {
+      allowedContent: false,
+      extraPlugins: 'divarea',
+      forcePasteAsPlainText: true
+    };
   }
+
+  onSubmit() {
+    this.contentservice.addContent(this.contentdata).subscribe((data: any) => {
+      alert("Data Saved Successfully!");
+      this.router.navigate(['/Post']);
+    })
+  }
+
+  Getcontent()
+  {
+    this.contentservice.getContentList().subscribe((data:any)=>{
+      this.res=data;
+      console.log(this.res);
+    })
+  }
+
+  public options: Object = {
+    events: {
+      initialized: function() {
+        console.log(this);
+      }
+    },
+    placeholderText: "Start typing..."
+  };
+
+  public editorContent: string = 'My Document\'s Title';
+  title = 'MyFroalaApp';
 
 }
