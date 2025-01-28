@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/sivajid788/angular-with-froala.git/ui-webapp.git'
+                git 'https://github.com/sivajid788/angular-with-froala/ui-webapp.git'
             }
         }
 
