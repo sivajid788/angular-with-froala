@@ -1,0 +1,74 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "sivajid788@gmail.com/ui-webapp"
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/sivajid788/angular-with-froala.git/ui-webapp.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'docker build -t $IMAGE_NAME .'
+                }
+            }
+        }
+
+        stage('Push Image to DockerHub') {
+            steps {
+                script {
+                    withDockerRegistry([credentialsId: 'sivajid788@gmail.com,7816062R@a', https://hub.docker.com/repositories/sivaji143?tags=image: '']) {
+                        sh 'docker push $IMAGE_NAME'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                sshagent(['-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAwHOjUm26JcCemJFBBXqJJ6URUVeHa4K81fU9/YJBSKbV08zG
+oVwFMuPDyLQZP5xMaIQDet+Lr/qKdGytP+pWZ9docOaiTtA4I/jGsrD0Wa9uBtOT
+EY+m2P6aAJUkDkZyrmXXQFBWltWp/PSogqzmdgzVXmWqQnWrl0FnP55JgwTV6ydz
+yKWq9lfCg21JP1Ow8XXXlLLRcfgOz0rae7Xts3Jrq3d/5/u1uFADjatI2tYicr5D
+kclxHcB63NYR6p5gjtkBzhTE7U7KG4UPQfMOVfuuFMCPC9pu7o3CNEPbDiYTxCij
+8x/F7T1KCwHdZJtQv02e2Qrq3usg+1vQUpkhNQIDAQABAoIBAQCADbGzjC1bJ2Kf
+0663DYSra2ste5cw0yoBF5Bq2TvFMrV+m3fjMA6JgQHpzuQp7j7tIEIMhSg2LPfp
+ZdKVf8CEkdD9poiC9osUbFkR1yqPbmpAgpEOE06KfkZMcvAty3RNVJg4Q/yJmpvk
+I4rogFFMZVen2u/CDvfgyfUAYLs7QFoE5uNnfT7BbX7QdsA8iALrDfggX5DnFdWj
+5r/APG4olcW0YnwSNiwX+mCLUcG2/L8bgePgQVkj2ttCa9RDAK8DRmMh7NIWoJrC
+E6Hm92c5N/5+/7AECvVD9jilZEjjWdrp4v89ic5of40pDDf0DRLY1s8wYscbRX/+
+2XMGUf0hAoGBAOHT/GbVdEY+LqvvDB/PuHBxJDThVQ4bbmg0MzlBmb3VaSRU1CuS
+Gao006neYwF/jqar16Mr+MWvanzI+6zST7lOCr4mLiTwy/85xcr8K/aNvnsLV176
+bLIANqcJvgf03ek8/D571MR+HRM7twZcCnN8q07zK49nLEMiK7CrXVZpAoGBANoq
+E/WrtuDKebC7AsCaSk4k6H3iTbwQ/vQF8O1GafJlYLtGvUBcC7N6Ggs1RAK2gwRR
+9U0EOH074kOsDeBO9oeHULsA8Nh6CEm/a1oqnNFFvWXP0C0I2JHXVhlCq0QIsWs6
+x5RZ+ZAWmmC171cs+y0H3wUd62If72i+wX+cHtLtAoGAT8mpLOAP492GeeLMwtSO
+UtP2ueQ/O+u/N3vx+THPUv361wZNrFNDVBq0Chlzm4zo5sRiPNmFXLscgZg1K5tm
+5Y7IRuSQeybEvJk54/zyv3rXKPwZ04nhK4bdyGitxnvih8yvRphT1VTFiw0XHl0Y
+qDMNB6js5A7M2a9SBmqVYLkCgYEAwB2t1fmQ4gNrhiYpFlLIfGgkFDblHWgaG+nf
+cBNB2SNNO53fqn1kEHjF1njhm0H9viAuU9QTqrTBW7Z3wb/HeTG/9e2uKfPMuKTI
+dG5yChfP4YhPWlkf3c4zE6uSBidhlXv9pLZW/nvpFqEgUzRZPB5iVq8ySQa2XRce
+brGcs0ECgYB8oX3YIHaFH7xIxciMC7JDUxHnpNJZgOz8jST1I/ukexjD+SEQ/WAN
+E0CkX344UGsCNyVC95+l5HyO04nw1MOUwyDHVdXvYEu+x3Uzm0Rs/Xhyy9Ha98PN
+QHryJIiwKymfwqbQbVE79hfWfye3J5LtjgiOzqOxDLdLjrm77/KW1A==
+-----END RSA PRIVATE KEY-----']) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ec2-user@<EC2-35.175.214.209> << EOF
+                    docker pull $IMAGE_NAME
+                    docker stop ui-webapp || true
+                    docker rm ui-webapp || true
+                    docker run -d -p 80:80 --name ui-webapp $IMAGE_NAME
+                    EOF
+                    '''
+                }
+            }
+        }
+    }
+}
