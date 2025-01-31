@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "sivajid788@gmail.com/ui-webapp"
+        IMAGE_NAME = "sivajid788@gmail.com/angular-with-froala:latest"
     }
 
     stages {
