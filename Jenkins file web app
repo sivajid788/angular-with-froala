@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry([credentialsId: 'sivajid788@gmail.com,7816062R@a', https://hub.docker.com/repositories/sivaji143?tags=image: '']) {
-                        sh 'docker push $IMAGE_NAME'
+                        sh 'docker push ' + IMAGE_NAME
                     }
                 }
             }
